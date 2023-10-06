@@ -4,11 +4,20 @@ import 'dart:io';
 import 'package:actual/common/component/custom_text_form_field.dart';
 import 'package:actual/common/const/colors.dart';
 import 'package:actual/common/layout/default_layout.dart';
+import 'package:actual/common/view/root_tab.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String username = '';
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
@@ -37,22 +46,24 @@ class LoginScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height / 5 * 2,
                 ),
                 CustomTextFormField(
-                  onChanged: (String value) {},
+                  onChanged: (String value) {
+                    username = value;
+                  },
                   hintText: '이메일을 입력해주세요.',
                 ),
                 const SizedBox(height: 16.0),
                 CustomTextFormField(
-                  onChanged: (String value) {},
+                  onChanged: (String value) {
+                    password = value;
+                  },
                   hintText: '비밀번호를 입력해주세요.',
                   obscureText: true,
                 ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () async {
-                    // ID : PWD
-                    const rawString = 'test@codefactory.ai:testtest';
+                    final rawString = '$username:$password';
 
-                    // 일반 스트링을 Base64로 바꿀 수 있는 한 줄의 코드!
                     Codec<String, String> stringToBase64 = utf8.fuse(base64);
                     String token = stringToBase64.encode(rawString);
 
@@ -62,6 +73,11 @@ class LoginScreen extends StatelessWidget {
                         headers: {
                           'authorization': 'Basic $token',
                         },
+                      ),
+                    );
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => RootTab(),
                       ),
                     );
                   },
