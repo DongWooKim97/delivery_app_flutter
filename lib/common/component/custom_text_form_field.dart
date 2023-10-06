@@ -25,7 +25,7 @@ class CustomTextFormField extends StatelessWidget {
         width: 1.0,
       ),
     );
-
+    
     return TextFormField(
       cursorColor: PRIMARY_COLOR,
       obscureText: obscureText,
@@ -42,6 +42,7 @@ class CustomTextFormField extends StatelessWidget {
         fillColor: INPUT_BG_COLOR,
         filled: true,
         border: baseBorder,
+        enabledBorder: baseBorder,
         focusedBorder: baseBorder.copyWith(
           borderSide: baseBorder.borderSide.copyWith(
             color: PRIMARY_COLOR,
@@ -69,3 +70,13 @@ class CustomTextFormField extends StatelessWidget {
 // 7. obscureText 는 비밀번호를 작성할때만 사용. 동그라미로 대체
 
 // 8. 화면에 텍스트필드가 들어왔을 때 바로 텍스트필드를 열거냐 안열거냐를 결정하는 것. autofocus
+
+// 9. 선택되지 않는 상태에서 활성화되어있는 보더를 지정할 수 있다.
+
+// 10. 전체 크기만큼만 우리가 위젯들을 채울 수가 있는데 , 이 위젯 크기를 넘어서 키보드가 올라와버림.
+//    그래서 위젯 위를 덮어버리는거임. 이 화면의 크기를 늘려주면 된다. -> 스크롤이 가능하게 만들어버리면 됨.
+//    login_screen에서 SafeArea의 상단 위젯에 SingleChildScrollView를 설정.
+
+// 11. 키보드가 올라온 상태에서 scroll을 한다는 것 자체가 키보드를 안보고싶다는, 그만보고싶다는 UI/UX적인 의미가 있다. 이를 적용시키기 위해
+//    keyboardDismissBehavior설정 -> SingleScrollChildView안에!!
+//    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, -> enum값을 리턴하는데, enum값을 보면 manual / ★onDrag★

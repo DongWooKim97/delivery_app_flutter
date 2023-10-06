@@ -9,41 +9,50 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      child: SafeArea(
-        top: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _Title(),
-            _SubTitle(),
-            Image.asset(
-              'asset/img/misc/logo.png',
-              height: MediaQuery.of(context).size.height / 5 * 2,
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        child: SafeArea(
+          top: true,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _Title(),
+                const SizedBox(height: 16.0),
+                _SubTitle(),
+                Image.asset(
+                  'asset/img/misc/logo.png',
+                  height: MediaQuery.of(context).size.height / 5 * 2,
+                ),
+                CustomTextFormField(
+                  onChanged: (String value) {},
+                  hintText: '이메일을 입력해주세요.',
+                ),
+                const SizedBox(height: 16.0),
+                CustomTextFormField(
+                  onChanged: (String value) {},
+                  hintText: '비밀번호를 입력해주세요.',
+                  obscureText: true,
+                ),
+                const SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    primary: PRIMARY_COLOR,
+                  ),
+                  child: Text('로그인'),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                    primary: Colors.black,
+                  ),
+                  child: Text('회원가입'),
+                ),
+              ],
             ),
-            CustomTextFormField(
-              onChanged: (String value) {},
-              hintText: '이메일을 입력해주세요.',
-            ),
-            CustomTextFormField(
-              onChanged: (String value) {},
-              hintText: '비밀번호를 입력해주세요.',
-              obscureText: true,
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                primary: PRIMARY_COLOR,
-              ),
-              child: Text('로그인'),
-            ),
-            TextButton(
-              onPressed: () {},
-              style: TextButton.styleFrom(
-                primary: Colors.black,
-              ),
-              child: Text('회원가입'),
-            ),
-          ],
+          ),
         ),
       ),
     );
