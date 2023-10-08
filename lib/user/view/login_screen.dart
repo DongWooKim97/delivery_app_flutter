@@ -3,10 +3,12 @@ import 'dart:io';
 
 import 'package:actual/common/component/custom_text_form_field.dart';
 import 'package:actual/common/const/colors.dart';
+import 'package:actual/common/const/data.dart';
 import 'package:actual/common/layout/default_layout.dart';
 import 'package:actual/common/view/root_tab.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -21,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final storage = FlutterSecureStorage();
     final dio = Dio();
     // localhost: :  Android / IOS
     const emulatorIp = '10.0.2.2:3000';
@@ -75,6 +78,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                     );
+
+                    final refreshToken = resp.data['refreshToken'];
+                    final accessToken = resp.data['accessToken'];
+
+                    // flutter_secure_storage에 key & value 저장
+                    await storage.write(
+                        key: REFRESH_TOKEN_KEY, value: refreshToken);
+                    await storage.write(
+                        key: ACCESS_TOKEN_KEY, value: accessToken);
+
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => RootTab(),
@@ -158,3 +171,5 @@ class _SubTitle extends StatelessWidget {
 
 // 16. stringToBase64라는 변수에다가 우리가 어떻게 인코딩을 할건지 정리를 하고,
 //      정의를 갖고서 String token = stringToBase64.encode(rawString); 를 통해 인코딩한다. rawString값을!@!
+
+// 17. 복습하자. initState()는 await할 수가 없다.
