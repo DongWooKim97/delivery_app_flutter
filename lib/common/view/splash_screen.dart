@@ -3,6 +3,7 @@
 import 'package:actual/common/layout/default_layout.dart';
 import 'package:actual/common/view/root_tab.dart';
 import 'package:actual/user/view/login_screen.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../const/colors.dart';
@@ -19,7 +20,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // deleteToken();
     checkToken();
   }
 
@@ -31,15 +31,25 @@ class _SplashScreenState extends State<SplashScreen> {
     final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
     final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
 
-    if (refreshToken == null || accessToken == null) {
+    final dio = Dio();
+
+    try {
+      final resp = await dio.post(
+        'http://$ip/auth/token',
+        options: Options(
+          headers: {
+            'authorization': 'Bearer $refreshToken',
+          },
+        ),
+      );
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => RootTab()), (route) => false);
+    } catch (e) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (_) => LoginScreen(),
           ),
           (route) => false);
-    } else {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => RootTab()), (route) => false);
     }
   }
 
@@ -66,3 +76,8 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+
+
+// try-catch를 통해 우선적으로 스토리지에 있는 토큰값을 받아오고, 토큰값을 받아온 이후에
+// 해당 토큰값으로 통신해본결과 오류가 발생하면 다시 로그인 화면으로 보낸다. 로그인 화면에 보내고
+// 다시 로그인을 하게 되면 새로운 토큰값이 스토리지에 저장되는 형식.

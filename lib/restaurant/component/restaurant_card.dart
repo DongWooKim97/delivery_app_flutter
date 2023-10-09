@@ -81,7 +81,9 @@ class RestaurantCard extends StatelessWidget {
                 renderDot(),
                 _IconText(
                   icon: Icons.monetization_on,
-                  label: deliveryFee == 0  ? '무료' : deliveryFee.toString(), // 없을 땐 무료라고 적어야함.
+                  label: deliveryFee == 0
+                      ? '무료'
+                      : deliveryFee.toString(), // 없을 땐 무료라고 적어야함.
                 ),
               ],
             )
@@ -95,7 +97,7 @@ class RestaurantCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
       child: Text(
-          '·',
+        '·',
         style: TextStyle(
           fontSize: 12.0,
           fontWeight: FontWeight.w500,
