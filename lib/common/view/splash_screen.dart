@@ -42,14 +42,14 @@ class _SplashScreenState extends State<SplashScreen> {
           },
         ),
       );
+      
+      await storage.write(key: ACCESS_TOKEN_KEY, value: resp.data['accessToken']);
+
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => RootTab()), (route) => false);
     } catch (e) {
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (_) => LoginScreen(),
-          ),
-          (route) => false);
+          MaterialPageRoute(builder: (_) => LoginScreen()), (route) => false);
     }
   }
 
@@ -76,7 +76,6 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-
 
 // try-catch를 통해 우선적으로 스토리지에 있는 토큰값을 받아오고, 토큰값을 받아온 이후에
 // 해당 토큰값으로 통신해본결과 오류가 발생하면 다시 로그인 화면으로 보낸다. 로그인 화면에 보내고
