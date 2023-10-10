@@ -42,14 +42,14 @@ class _SplashScreenState extends State<SplashScreen> {
           },
         ),
       );
-      
+
       await storage.write(key: ACCESS_TOKEN_KEY, value: resp.data['accessToken']);
 
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => RootTab()), (route) => false);
+      Navigator.of(context)
+          .pushAndRemoveUntil(MaterialPageRoute(builder: (_) => RootTab()), (route) => false);
     } catch (e) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => LoginScreen()), (route) => false);
+      Navigator.of(context)
+          .pushAndRemoveUntil(MaterialPageRoute(builder: (_) => LoginScreen()), (route) => false);
     }
   }
 
