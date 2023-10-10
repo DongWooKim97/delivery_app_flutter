@@ -27,37 +27,28 @@ class RestaurantScreen extends StatelessWidget {
     return Container(
       child: Center(
         child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: FutureBuilder<List>(
-              future: paginateRestaurant(),
-              builder: (context, AsyncSnapshot<List> snapshot) {
-                if (!snapshot.hasData) {
-                  return Container();
-                }
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: FutureBuilder<List>(
+            future: paginateRestaurant(),
+            builder: (context, AsyncSnapshot<List> snapshot) {
+              if (!snapshot.hasData) {
+                return Container();
+              }
 
-                return ListView.separated(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (_, index) {
-                    final item = snapshot.data![index];
-                    final pItem = RestaurantModel.fromJson(
-                      json: item,
-                    );
-                    return RestaurantCard(
-                      image: Image.network(pItem.thumbUrl),
-                      name: pItem.name,
-                      tags: pItem.tags,
-                      ratingsCount: pItem.ratingsCount,
-                      deliveryTime: pItem.deliveryTime,
-                      deliveryFee: pItem.deliveryFee,
-                      ratings: pItem.ratings,
-                    );
-                  },
-                  separatorBuilder: (_, index) {
-                    return SizedBox(height: 16.0);
-                  },
-                );
-              },
-            )),
+              return ListView.separated(
+                separatorBuilder: (_, index) {
+                  return SizedBox(height: 16.0);
+                },
+                itemCount: snapshot.data!.length,
+                itemBuilder: (_, index) {
+                  final item = snapshot.data![index];
+                  final pItem = RestaurantModel.fromJson(json: item);
+                  return RestaurantCard.fromModel(model: pItem);
+                },
+              );
+            },
+          ),
+        ),
       ),
     );
   }
