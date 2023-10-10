@@ -33,6 +33,56 @@ class CustomInterceptor extends Interceptor {
 
     return super.onRequest(options, handler);
   }
+
+  // 3) 에러가 났을때
+  @override
+  void onError(DioError err, ErrorInterceptorHandler handler) async {
+    // 401 에러가 났을 때
+    // 토큰을 재발급 받는 시도를 하고 토큰이 재발급되면 다시 새로운 토큰을 요청한다.
+
+    print('[err] : [${err.requestOptions.method}] -> [${err.requestOptions.uri}]');
+
+    final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
+    // refreshToken이 없으면 당연히 에러를 던지는 곳
+    if (refreshToken == null) {
+      // 에러를 던질 때는 handler.reject를 사용한다.
+      return handler.reject(err);
+    }
+
+    // requestOptions = > 요청의 모든 값들을 알 수 있는 것
+    // reponse = > 응답의 모든 값들을 알 수 있는 것
+    final isStatus401 = err.response?.statusCode == 401;
+    final isPathRefresh =
+        err.requestOptions.path == '/auth/token'; // 이 에러는 토큰을 리프레시 하려다가 에러가 났다는 것.
+
+    if (isStatus401 && !isPathRefresh) {
+      final dio = Dio();
+
+      try {
+        final resp = await dio.post(
+          'http://$ip/auth/token',
+          options: Options(
+            headers: {
+              'authorization': 'Bearer $refreshToken',
+            },
+          ),
+        );
+        final accessToken = resp.data['accessToken'];
+        final options = err.requestOptions;
+
+        //토큰 변경하기
+        options.headers.addAll({
+          'authorization': 'Bearer $accessToken',
+        });
+        await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
+        // 요청 재전송
+        final response = await dio.fetch(options); // 실제로 요청을 보낼 때 requestOptions안에 다있다.
+        return handler.resolve(response);
+      } on DioError catch (e) {
+        return handler.reject(e);
+      }
+    }
+  }
 }
 
 // on * 3
@@ -49,3 +99,21 @@ print('[REQ] : [${options.method}] -> [${options.uri}]');
  */
 
 // 우리끼리의 사인은 accessToken이지만, 실제 토큰을 사용하기 위해서는 header의 authorization 에 넣어야한다. Bearer와 합쳐서 !
+
+/*
+  요청onRequest는 요청 보내는 함수가 실행이 되고 요청이 보내지기 전에 , 요청을 가로채는 순간에 실행된다.
+  실제로 이 요청을 가로챈다음에 요청이 보내지는 곳은 맨아래 리턴하는 곳이다.
+  그 마지막 리턴할 때(가로챈 후 보내질떄) 어떠한 상황이 벌어지냐면
+  핸들러를 갖고서 요청을 보낼지 또는 에러를 생성을 시킬지에 대한 결정이 일어나고있다.
+  또 에러를 생성시키는 방법은 onError에서 마찬가지로 handler.reject함수에서 에러를 발생시킨다.
+  에러없이 끝내고 싶으면 handler.resolver(response)하면 된다.
+ */
+
+/*
+  만약에 401에러가 나고 새로 발급받는 요청이 아니었다면,
+  새로 토큰을 발급을 받은 다음에 새로 토큰을 헤더에 넣어가지고 원래 요청을 토큰만 변경시킨채 다시 보내는 것.
+  또 이에 대한 응답이 온다. 실제로는 onError가 실행됐지만, 실제로 반환해줘야하는 값은 응답이 잘 왔다고 받은 응답을 다시 보내줘야함.
+  그래서 에러 막판에 handler.resolve(response)하는 이유다.
+
+  그러나, 여기서는 새로 보낸 요청에 대한 응답을 받아가지고 resolve를 하면 에러가 난 상황에 똑같은 요청을 토큰만 바꿔서 ㅊ요청한다음 성공 반환값을 돌려줄 수가 있다.
+ */
