@@ -1,4 +1,5 @@
 import 'package:actual/restaurant/component/restaurant_card.dart';
+import 'package:actual/restaurant/model/restaurant_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -38,17 +39,27 @@ class RestaurantScreen extends StatelessWidget {
                   itemCount: snapshot.data!.length,
                   itemBuilder: (_, index) {
                     final item = snapshot.data![index];
-
-                    return RestaurantCard(
-                      image: Image.network(
-                        'http://$ip${item['thumbUrl']}',
-                      ),
+                    final pItem = RestaurantModel(
+                      id: item['id'],
                       name: item['name'],
+                      thumbUrl: 'http://$ip${item['thumbUrl']}',
                       tags: List<String>.from(item['tags']),
+                      priceRange: RestaurantPriceRange.values
+                          .firstWhere((e) => e.name == item['priceRange']),
+                      ratings: item['ratings'],
                       ratingsCount: item['ratingsCount'],
                       deliveryTime: item['deliveryTime'],
                       deliveryFee: item['deliveryFee'],
-                      ratings: item['ratings'],
+                    );
+
+                    return RestaurantCard(
+                      image: Image.network(pItem.thumbUrl),
+                      name: pItem.name,
+                      tags: pItem.tags,
+                      ratingsCount: pItem.ratingsCount,
+                      deliveryTime: pItem.deliveryTime,
+                      deliveryFee: pItem.deliveryFee,
+                      ratings: pItem.ratings,
                     );
                   },
                   separatorBuilder: (_, index) {
@@ -61,3 +72,5 @@ class RestaurantScreen extends StatelessWidget {
     );
   }
 }
+
+// 현재로썬 왜 pItem을 만들어가면서 데이터를 파싱해 사용하는지 궁금.
