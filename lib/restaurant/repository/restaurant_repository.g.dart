@@ -22,10 +22,7 @@ class _RestaurantRepository implements RestaurantRepository {
   Future<RestaurantDetailModel> getRestaurantDetail({required id}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{
-      r'authorization':
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAY29kZWZhY3RvcnkuYWkiLCJzdWIiOiJmNTViMzJkMi00ZDY4LTRjMWUtYTNjYS1kYTlkN2QwZDkyZTUiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNjk2OTI0NTE0LCJleHAiOjE2OTY5MjQ4MTR9.O_-mkp6oQ-s6SeOBF_gH0bDt0qDO27aEiwSiQvZ4Tlk'
-    };
+    final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<Map<String, dynamic>>(

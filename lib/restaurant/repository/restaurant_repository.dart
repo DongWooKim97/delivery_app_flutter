@@ -18,7 +18,7 @@ abstract class RestaurantRepository {
   // http://$ip/restaurant/:id/
   @GET('/{id}')
   @Headers({
-    'authorization' : 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAY29kZWZhY3RvcnkuYWkiLCJzdWIiOiJmNTViMzJkMi00ZDY4LTRjMWUtYTNjYS1kYTlkN2QwZDkyZTUiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNjk2OTI0NTE0LCJleHAiOjE2OTY5MjQ4MTR9.O_-mkp6oQ-s6SeOBF_gH0bDt0qDO27aEiwSiQvZ4Tlk'
+    'accessToken' : 'true'
   })
   Future<RestaurantDetailModel> getRestaurantDetail({
     @Path() required String id,
@@ -32,3 +32,8 @@ abstract class RestaurantRepository {
 // id라는 이 패스안에 있는 변수를 자동으로 우리가 이 안에다가 이 파라미터 안에 넣은 값으로 대체할 수 있다.
 // 현재 GET요청으로 {id}라는 변수가 필요한데, @Path 하고 붙인 named 파라미터가 이 값을 대체할 수 있다.
 // 이름과 똑같은 변수로 대체할 수 있다.  만약 다르다면 대체할 변수명을 직접 넣어줘야함.
+
+
+// 토큰을 자동으로 관리하는 방법을 알아보자.
+// 자동관리란 로그인을 하면 새로운 토큰 2개를 발급받는다. 근데 액세스 토큰이 만료과 됐을 때 저희가 리프레쉬 토큰을 사용해서 자동으로 액세스 토큰
+// 토큰을 다시 발급받은 다음에 storage에 자동으로 갱신/저장시키는 방법을 알아보자!! ---->> interceptor를 이용해서 짜보자
