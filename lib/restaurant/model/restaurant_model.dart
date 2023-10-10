@@ -1,10 +1,18 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import '../../common/const/data.dart';
+
+part 'restaurant_model.g.dart';
 
 enum RestaurantPriceRange { expensive, medium, cheap }
 
+@JsonSerializable()
 class RestaurantModel {
   final String id;
   final String name;
+  @JsonKey(
+    fromJson: pathToUrl,
+  )
   final String thumbUrl;
   final List<String> tags;
   final RestaurantPriceRange priceRange;
@@ -24,16 +32,18 @@ class RestaurantModel {
       required this.deliveryTime,
       required this.deliveryFee});
 
-  factory RestaurantModel.fromJson({required Map<String, dynamic> json}) {
-    return RestaurantModel(
-        id: json['id'],
-        name: json['name'],
-        thumbUrl: 'http://$ip${json['thumbUrl']}',
-        tags: List<String>.from(json['tags']),
-        priceRange: RestaurantPriceRange.values.firstWhere((e) => e.name == json['priceRange']),
-        ratings: json['ratings'],
-        ratingsCount: json['ratingsCount'],
-        deliveryTime: json['deliveryTime'],
-        deliveryFee: json['deliveryFee']);
+  factory RestaurantModel.fromJson(Map<String, dynamic> json) => _$RestaurantModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RestaurantModelToJson(this);
+
+  // 무조건 static이여야한다. @JsonKey에 들어갈 함수면
+  // @JsonKey로 어노테이션 지정해준 필드가 파라미터로 들어온다. 파라미터명이 달라도, 같은 파라미터라고 이해해야한다. 또한 알아서 들어오기 때문에 함수명만 사용해도됨.
+  static pathToUrl(String value) {
+    return 'http://$ip$value}';
   }
+
 }
+
+// json으로부터 인스턴스를 만드는 것과 json으로 인스턴스를 변환하는거 두가지 자동화. fromJson . toJson
+// toJson이 실행이 될 때 json으로 변경이 될 때 실행하고 싶은 함수는 toJson에 넣으면 되고
+// fromJson이 실행이 됐을 때, json으로 부터 인스턴스를 만들 때 실행하고 싶은 함수는 fromJson에다 넣는다. 상단에 @JsonKey값에
