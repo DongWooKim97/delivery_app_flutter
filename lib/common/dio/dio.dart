@@ -83,6 +83,12 @@ class CustomInterceptor extends Interceptor {
       }
     }
   }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    print('[RESP] : [${response.requestOptions.method}] -> [${response.requestOptions.uri}]');
+    return super.onResponse(response, handler);
+  }
 }
 
 // on * 3
