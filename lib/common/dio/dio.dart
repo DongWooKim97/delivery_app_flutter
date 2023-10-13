@@ -1,6 +1,23 @@
 import 'package:actual/common/const/data.dart';
+import 'package:actual/common/secure_storage/secure_storage.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+// Dio와 스토리지를 같은 인스턴스로 사용할 수 있으면 매번 Dio안에다가 인터셉터를 생성해주는 반복적인 작업을 하지 않아도 된다.
+// ref를 사용하면,  ★ 또 다른 프로바이더를 불러올 수 있다는 사실!! ★
+final dioProvider = Provider<Dio>((ref) {
+  final dio = Dio();
+  final storage = ref.watch(secureStorageProvider); // ★★ 다른 프로바이더를 불러옴 ★★
+
+  dio.interceptors.add(
+    CustomInterceptor(storage: storage),
+  );
+
+  return dio;
+  //반환되는 위의 dio는 하나의 Dio의 인스턴스를 갖고서 스토리지도 SeucreStorageProvider안에서 제공을 해주는 하나의 인스턴스의 스토리지를 사용해서 DIO를 생성해서,
+  // 똑같은 DO를 배번 반환해줄 수있다. !!!
+});
 
 class CustomInterceptor extends Interceptor {
   final FlutterSecureStorage storage;

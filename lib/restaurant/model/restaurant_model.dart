@@ -1,8 +1,6 @@
 import 'package:actual/common/utils/data_utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../common/const/data.dart';
-
 part 'restaurant_model.g.dart';
 
 enum RestaurantPriceRange { expensive, medium, cheap }
@@ -36,8 +34,6 @@ class RestaurantModel {
   factory RestaurantModel.fromJson(Map<String, dynamic> json) => _$RestaurantModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$RestaurantModelToJson(this);
-
-
 }
 
 // json으로부터 인스턴스를 만드는 것과 json으로 인스턴스를 변환하는거 두가지 자동화. fromJson . toJson
