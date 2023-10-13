@@ -19,22 +19,18 @@ class RestaurantDetailScreen extends ConsumerWidget {
     Key? key,
   }) : super(key: key);
 
-  Future<RestaurantDetailModel> getRestaurantDetail(WidgetRef ref) async {
-    final dio = ref.watch(dioProvider);
-    // dioProvider를 넣어서 반환받은 이 dio는 어디에서 불러와도
-    // 맨 처음에  dioProvider가 빌드됐을 떄 항상 같은 인터셉터가 적용이 된 Dio가 무조건 받을 수 있다고 장담할 수 있다.
-
-    final repository = RestaurantRepository(dio, baseUrl: 'http://$ip/restaurant');
-
-    return repository.getRestaurantDetail(id: id);
-  }
+  // dioProvider를 넣어서 반환받은 이 dio는 어디에서 불러와도
+  // 맨 처음에  dioProvider가 빌드됐을 떄 항상 같은 인터셉터가 적용이 된 Dio가 무조건 받을 수 있다고 장담할 수 있다.
+  // 값 변경전에 사용하던 것처럼 직접 불러와서하는건 별로 좋게 보이지 않는다. 왜 ? 여긴 UI적인 코드를 작성하는 곳이므로 UI적인 코드만 있는게 맞다.
+  // 또한 restaurantRepositoryProvider에는 dio에 repository까지 넣은 상태이므로, 가져다 쓰기만 하면 된다. (3 Line -> 1 Line)
+  // 아래의 future의 파라미터에 넣은 값을 확인!
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultLayout(
       title: name,
       child: FutureBuilder<RestaurantDetailModel>(
-        future: getRestaurantDetail(ref),
+        future: ref.watch(restaurantRepositoryProvider).getRestaurantDetail(id: id),
         builder: (_, AsyncSnapshot<RestaurantDetailModel> snapshot) {
           if (snapshot.hasError) {
             return Center(

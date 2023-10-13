@@ -1,11 +1,22 @@
+import 'package:actual/common/dio/dio.dart';
 import 'package:actual/common/model/cursor_pagination.dart';
 import 'package:actual/restaurant/model/restaurant_model.dart';
 import 'package:dio/dio.dart' hide Headers;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/http.dart';
 
+import '../../common/const/data.dart';
 import '../model/restaurant_detail_model.dart';
 
 part 'restaurant_repository.g.dart';
+
+// 만약 dioProvider가 변경될 일은 없겠지만 변경될 수도 있기에 watch 사용. 그냥 watch를 사용하는게 좋다.
+// 레포지토리 개수가 늘어나고, 많아져도 아래와 같이 작성하면 어디서든 똑같은 dio 인스턴스를 넣을 수가 있다는 것이다!!
+final restaurantRepositoryProvider = Provider<RestaurantRepository>((ref) {
+  final dio = ref.watch(dioProvider);
+  final repository = RestaurantRepository(dio, baseUrl: 'http://$ip/restaurant');
+  return repository;
+});
 
 @RestApi()
 abstract class RestaurantRepository {
