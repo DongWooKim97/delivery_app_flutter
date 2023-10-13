@@ -1,3 +1,4 @@
+import 'package:actual/common/model/cursor_pagination.dart';
 import 'package:actual/restaurant/model/restaurant_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,12 +12,12 @@ final restaurantProvider =
 });
 
 // 캐시를 관리하는 provider들은 무조건 모두다 StateNotifierProvider로 만들 것이다.
-class RestaurantStateNotifier extends StateNotifier<List<RestaurantModel>> {
+class RestaurantStateNotifier extends StateNotifier<CursorPagination> {
   final RestaurantRepository repository;
 
   RestaurantStateNotifier({
     required this.repository,
-  }) : super([]) {
+  }) : super([]) { // CursorPaginatino을 실행하기 전 상태, or 로딩 상태다 라는걸 알려줘야함.
     paginate();
   }
 
